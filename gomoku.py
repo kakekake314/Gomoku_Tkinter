@@ -5,14 +5,10 @@ import Tkinter
 
 
 root = Tkinter.Tk()
-root.title(u"Software Title")
-root.geometry("660x480+100+100")#ヨコ＊タテ+X+Y
-root.minsize(660,480)
+root.title(u'五目並べ')
+root.geometry("300x480+100+100")#ヨコ＊タテ+X+Y
+root.minsize(300,480)
 root.option_add('*font', ('FixedSys', 14))
-
-#ラベル
-Label1 = Tkinter.Label(text=u'五目並べ')
-Label1.pack()
 
 var = Tkinter.StringVar()
 var.set('koukou')
@@ -25,13 +21,25 @@ def setKoukou():
 
 def getTurnNumber():
 	print var.get()
+	startButton.configure(state='disabled')
+	gomokuFrame.pack(fill=Tkinter.BOTH)
 
-# ラジオボタンの設定
-for txt,com,x,y in [(u'先行',setSenkou,220,30), (u'後攻',setKoukou,280,30)]:
-    Tkinter.Radiobutton(root, text = txt,value=txt,command=com).place(x=x,y=y)
+settingFrame = Tkinter.Frame(root)
+# ラジオボタン
+for txt,com in [(u'先行',setSenkou), (u'後攻',setKoukou)]:
+    Tkinter.Radiobutton(settingFrame, text = txt,value=txt,command=com).pack()
 
-# ボタン
-startButton = Tkinter.Button(root, text = 'スタート',command = getTurnNumber)
-startButton.place(x=350,y=28)
+# スタートボタン
+startButton = Tkinter.Button(settingFrame, text = u'スタート',command = getTurnNumber)
+startButton.pack()
+
+settingFrame.pack()
+gomokuFrame = Tkinter.Frame(root)
+
+button = Tkinter.Button(gomokuFrame, text = '00').grid(column=0,row=0)
+button = Tkinter.Button(gomokuFrame, text = '00').grid(column=1,row=0)
+button = Tkinter.Button(gomokuFrame, text = '00').grid(column=2,row=0)
+button = Tkinter.Button(gomokuFrame, text = '00').grid(column=3,row=0)
+button = Tkinter.Button(gomokuFrame, text = '00').grid(column=4,row=0)
 
 root.mainloop()
