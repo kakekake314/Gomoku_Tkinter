@@ -2,69 +2,85 @@
 # -*- coding: utf8 -*-
 import sys
 import Tkinter as tk
+import Banmen
+
+class Gomoku:
+	def __init__(self):
+		self.root = tk.Tk()
+		self.root.title(u'五目並べ')
+		self.root.geometry("+300+300")#ヨコ＊タテ+X+Y
+		# root.resizable(width=False, height=False)
+		self.root.option_add('*font', ('FixedSys', 14))
+
+		self.maxBanmen=10
 
 
-root = tk.Tk()
-root.title(u'五目並べ')
-root.geometry("+300+300")#ヨコ＊タテ+X+Y
-# root.resizable(width=False, height=False)
-root.option_add('*font', ('FixedSys', 14))
+		self.var = tk.StringVar()
+		self.var.set('koukou')
 
-var = tk.StringVar()
-var.set('koukou')
+		self.teban = tk.BooleanVar()
+		self.teban.set(True)#True＝先行＝◯
 
-isSenkou = tk.BooleanVar()
-isSenkou.set(True)
-
-isStart = tk.BooleanVar()
-isStart.set(False)
-
-def setSenkou():
-	var.set('senkou')
-
-def setKoukou():
-	var.set('koukou')
-
-def start():
-	isStart.set(True)
-	print var.get()
-	startButton.configure(state='disabled')
+		self.isStart = tk.BooleanVar()
+		self.isStart.set(False)
 
 
-def pushButton(event):
-	if isStart.get():
-		if isSenkou.get():
-			event.widget['text'] = '◯'
-			isSenkou.set(False)
-		else:
-			event.widget['text'] = '✕'
-			isSenkou.set(True)
+		self.settingFrame = tk.Frame(self.root)
+		# ラジオボタン
+		for txt,com in [(u'先行',self.setSenkou), (u'後攻',self.setKoukou)]:
+		    tk.Radiobutton(self.settingFrame, text = txt,value=txt,command=com).pack()
 
+		# スタートボタン
+		self.startButton = tk.Button(self.settingFrame, text = u'スタート',command = self.start)
+		self.startButton.pack()
 
-settingFrame = tk.Frame(root)
-# ラジオボタン
-for txt,com in [(u'先行',setSenkou), (u'後攻',setKoukou)]:
-    tk.Radiobutton(settingFrame, text = txt,value=txt,command=com).pack()
+		self.settingFrame.pack(padx=100)
 
-# スタートボタン
-startButton = tk.Button(settingFrame, text = u'スタート',command = start)
-startButton.pack()
-
-settingFrame.pack(padx=100)
-
-gomokuFrame = tk.Frame(root)
-gomokuFrame.pack()
+		self.gomokuFrame = tk.Frame(self.root)
+		self.gomokuFrame.pack()
 
 
 
-banmen=[[],[],[],[],[]]
+		self.banmen=[]
 
-for col in range(5):
-	for row in range(5):
-		button = tk.Button(gomokuFrame,text='　')
-		button.bind('<Button-1>',pushButton)
-		button.grid(column=col,row=row)
-		banmen[col].append(button)
+		for row in range(self.maxBanmen):
+			self.banmen.append([])
+			for col in range(self.maxBanmen):
+				button = tk.Button(self.gomokuFrame,text=u'　')
+				button.bind('<Button-1>',self.pushButton)
+				button.grid(column=col,row=row)
+				self.banmen[row].append(button)
 
 
-root.mainloop()
+		self.root.mainloop()
+
+	def setSenkou(self):
+		self.var.set('senkou')
+
+	def setKoukou(self):
+		self.var.set('koukou')
+
+	def start(self):
+		self.isStart.set(True)
+		print self.var.get()
+		self.startButton.configure(state='disabled')
+
+
+	def pushButton(self,event):
+		if self.isStart.get() and event.widget['text'] == u'　':
+			if self.teban.get():
+				event.widget['text'] = u'◯'
+				self.teban.set(False)
+			else:
+				event.widget['text'] = u'✕'
+				self.teban.set(True)
+
+
+	def banmenReset():
+		for row in range(self.maxBanmen):
+			for col in range(self.maxBanmen):
+				self.banmen[row][col]['text'] = u'　'
+
+
+
+
