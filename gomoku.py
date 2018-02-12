@@ -66,9 +66,5 @@ for col in range(5):
 		button.grid(column=col,row=row)
 		banmen[col].append(button)
 
-for aaa in range(5):
-	for bbb in range(5):
-		print banmen[aaa][bbb]['text']
-
 
 root.mainloop()
