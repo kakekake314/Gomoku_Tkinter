@@ -18,10 +18,6 @@ class Banmen:
 		else:
 			self.data[row][col] = 2
 
-	# 置けるかどうか
-	def canPut(self,col,row):
-		return self.data[row][col] == 0
-
 	# 左右確認
 	def sideJudge(self,col,row):
 		judge = False
@@ -118,11 +114,15 @@ class Banmen:
 						judgeData = self.data[row][col]
 		return judgeData # 勝敗なし0,先行（丸）勝ち:1,後攻（バツ）勝ち:2
 
-	# 盤面出力
+	# 盤面表示
 	def printData(self):
 		for row in range(self.size):
 			for col in range(self.size):
 				print self.data[row][col],
 			print ''
 		print''
+
+	# 盤面出力
+	def getData(self):
+		return self.data
 
