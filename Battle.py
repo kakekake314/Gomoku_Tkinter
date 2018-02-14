@@ -4,8 +4,6 @@
 import sys
 from Banmen import Banmen
 
-from RandomPlayer import RandomPlayer
-
 class Battle:
 	def __init__(self,senkouP,koukouP):
 		self.senkouP = senkouP
