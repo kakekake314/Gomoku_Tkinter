@@ -114,6 +114,14 @@ class Banmen:
 						judgeData = self.data[row][col]
 		return judgeData # 勝敗なし0,先行（丸）勝ち:1,後攻（バツ）勝ち:2
 
+	# すべて埋まっている
+	def isAllFilled(self):
+		for row in range(self.size):
+			for col in range(self.size):
+				if self.data[row][col] == 0:
+					return False
+		return True
+
 	# 盤面表示
 	def printData(self):
 		for row in range(self.size):

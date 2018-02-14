@@ -7,7 +7,7 @@ class Player:
 		self.name = name
 		self.isSenkou=isSenkou
 
-	def action(self):
+	def action(self,data):
 		col = 0
 		row = 0
 		return col,row
