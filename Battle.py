@@ -4,6 +4,8 @@
 import sys
 from Banmen import Banmen
 
+from RandomPlayer import RandomPlayer
+
 class Battle:
 	def __init__(self,senkouP,koukouP):
 		self.senkouP = senkouP
@@ -12,13 +14,16 @@ class Battle:
 		self.banmen = Banmen()
 
 	def progress(self):
-		self.banmen.getData()
+		self.banmenData = self.banmen.getData()
 		if self.isSenkouTurn:
-			self.senkouP.action(self.banmen)
+			col,row = self.senkouP.action(self.banmenData)
+			self.banmen.put(col,row,True)
 			self.isSenkouTurn = False
 		else:
-			self.koukouP.action(self.banmen)
+			col,row = self.koukouP.action(self.banmenData)
+			self.banmen.put(col,row,False)
 			self.isSenkouTurn = True
+		print self.banmen.getData()
 
 
 	def isFinished(self):
@@ -41,3 +46,5 @@ class Battle:
 
 	def isDraw(self):
 		return self.banmen.isAllFilled()
+
+
