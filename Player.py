@@ -8,6 +8,10 @@ class Player:
 		self.isSenkou=isSenkou
 
 	def action(self,data):
-		col = 0
-		row = 0
-		return col,row
+		for row in range(len(data)):
+			for col in range(len(data)):
+				if data[row][col] == 0:
+					return col,row
+
+	def getName(self):
+		return self.name
