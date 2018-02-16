@@ -25,9 +25,10 @@ class AlphaRandomPlayer(Player):
 
 	# 置けるかどうか
 	def canPut(self,banmen,col,row):
-		if col<0 or row<0 or col>len(banmen) or row>len(banmen):
+		if col<0 or row<0 or col>=len(banmen) or row>=len(banmen):
 			return False
-		return banmen[row][col] == 0
+		else:
+			return banmen[row][col] == 0
 
 	# 左右確認
 	def sideJudge(self,data,col,row):
