@@ -17,6 +17,7 @@ class Battle:
 		self.isSenkouHuman = False
 		self.isKoukouHuman = False
 		self.root = root
+		self.winner = -1
 
 	def setPlayer(self,senkouName,koukouName):
 		if senkouName == u'人間':
@@ -62,16 +63,22 @@ class Battle:
 		isFinished = False
 		if self.isSenkouWon():
 			isFinished = True
+			self.winner = 1
 		elif self.isKoukouWon():
 			isFinished = True
+			self.winner = 2
 		elif self.isDraw():
 			isFinished = True
+			self.winner = 0
 		else:
 			isFinished = False
 
 		if isFinished:
-			self.buttonColoring(self.banmen.getAlignedColRow(),'#3E4149')
+			self.buttonColoring(self.banmen.getAlignedColRow(),'red')
 		return isFinished
+
+	def getWinner(self):
+		return self.winner
 
 
 	def createButton(self,size):
