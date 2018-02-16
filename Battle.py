@@ -150,6 +150,15 @@ class Battle:
 		return self.banmen.isAllFilled()
 
 
-	def banmenReset(self):
+	def reset(self):
+		if self.winner != -1:
+			self.buttonColoring(self.banmen.getAlignedColRow(),'white')
 		self.banmen.reset()
+		self.banmenData = self.banmen.getData()
+		self.isSenkouTurn = True
+		self.winner = -1
+		if self.isSenkouHuman or self.isKoukouHuman:
+			for row in range(len(self.banmenData)):
+				for col in range(len(self.banmenData)):
+					self.buttons[row][col]['text'] = u'　'
 

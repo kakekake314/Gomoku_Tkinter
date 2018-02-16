@@ -62,8 +62,8 @@ class Gomoku:
 		self.startButton.pack()
 
 		# リスタートボタン
-		# self.restartButton = tk.Button(self.settingFrame, text = u'リスタート',command = self.banmenReset,state='disabled')
-		# self.restartButton.pack()
+		self.restartButton = tk.Button(self.settingFrame, text = u'リスタート',command = self.restart,state='disabled')
+		self.restartButton.pack()
 
 		self.settingFrame.pack(padx=100)
 		self.battleFrame.pack()
@@ -86,8 +86,12 @@ class Gomoku:
 		self.startButton.configure(state='disabled')
 		self.comboboxS.configure(state='disabled')
 		self.comboboxK.configure(state='disabled')
-		# self.restartButton.configure(state='normal')
+		self.restartButton.configure(state='normal')
 		self.battle.setPlayer(self.senkouName.get(),self.koukouName.get())
+		self.battle.progress()
+
+	def restart(self):
+		self.battle.reset()
 		self.battle.progress()
 
 
