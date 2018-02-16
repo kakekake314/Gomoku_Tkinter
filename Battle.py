@@ -5,6 +5,7 @@ import sys
 from Banmen import Banmen
 from Player import Player
 from RandomPlayer import RandomPlayer
+from AlphaRandomPlayer import AlphaRandomPlayer
 import Tkinter as tk
 
 class Battle:
@@ -24,7 +25,7 @@ class Battle:
 			self.senkouP = RandomPlayer(u'ランダム君',True)
 		elif senkouName == 'com':
 			# self.senkouP = ComputerPlayer('com',True)
-			self.senkouP = Player('com',True)
+			self.senkouP = AlphaRandomPlayer('com',True)
 
 		if koukouName == u'人間':
 			self.isKoukouHuman = True
@@ -32,7 +33,7 @@ class Battle:
 			self.koukouP = RandomPlayer(u'ランダム君',False)
 		elif koukouName == 'com':
 			# self.koukouName = ComputerPlayer('com',True)
-			self.koukouP = Player('com',False)
+			self.koukouP = AlphaRandomPlayer('com',False)
 
 
 	def progress(self):
@@ -96,6 +97,7 @@ class Battle:
 							self.banmen.put(col2,row2,False)
 							self.isSenkouTurn = True
 						self.banmenUpdate(self.banmen.getData())
+						self.isFinished()
 				else:
 					self.buttons[row][col]['text'] = u'✕'
 					self.banmen.put(col,row,self.isSenkouTurn)
@@ -107,6 +109,7 @@ class Battle:
 							self.banmen.put(col2,row2,True)
 							self.isSenkouTurn = False
 						self.banmenUpdate(self.banmen.getData())
+						self.isFinished()
 		return x
 
 
