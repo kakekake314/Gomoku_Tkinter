@@ -4,6 +4,7 @@ import sys
 from Player import Player
 import random
 
+# ランダムに行動するプレイヤー
 class RandomPlayer(Player):
 
 	# 置ける所にランダムに置く
@@ -15,6 +16,6 @@ class RandomPlayer(Player):
 					choice.append([col,row])
 		return random.choice(choice)
 
-	# 置けるかどうか
+	# 置けるかどうか確認
 	def canPut(self,banmen,col,row):
 		return banmen[row][col] == 0

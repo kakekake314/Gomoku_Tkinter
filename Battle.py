@@ -8,17 +8,20 @@ from RandomPlayer import RandomPlayer
 from AlphaRandomPlayer import AlphaRandomPlayer
 import Tkinter as tk
 
+# ２人のプレイヤーが対戦を行う
 class Battle:
 	def __init__(self,root):
-		self.banmen = Banmen()
-		self.isSenkouTurn = True
-		self.banmenData = self.banmen.getData()
-		self.isCreate = False
+		self.banmen = Banmen()					#共通の盤面
+		self.isSenkouTurn = True				#先攻かどうか
+		self.banmenData = self.banmen.getData()	#盤面情報
+		self.winner = -1						#勝者（-1:なし,0:引き分け,1:先攻,2:後攻）
+		# プレイヤーに人間が選択された場合にボタンを表示する
 		self.isSenkouHuman = False
 		self.isKoukouHuman = False
-		self.root = root
-		self.winner = -1
+		self.isCreate = False					#ボタンが生成されたかどうか
+		self.root = root						#ボタンを表示するフレーム
 
+	# 対戦するプレイヤーをセットする
 	def setPlayer(self,senkouName,koukouName):
 		if senkouName == u'人間':
 			self.isSenkouHuman = True
@@ -36,16 +39,17 @@ class Battle:
 			# self.koukouName = ComputerPlayer('com',True)
 			self.koukouP = AlphaRandomPlayer('com',False)
 
-
+	# 対戦を進める
 	def progress(self):
+		# 人間がプレイする場合はボタン押下で行う
 		if self.isSenkouHuman or self.isKoukouHuman:
 			self.createButton(len(self.banmenData))
-			if not self.isSenkouHuman:#先攻がコンピュータの時
+			if not self.isSenkouHuman:#先攻がコンピュータの時は先に打っておく
 				col,row = self.senkouP.action(self.banmenData)
 				self.banmen.put(col,row,True)
 				self.banmenUpdate(self.banmen.getData())
 				self.isSenkouTurn = False
-		else:#コンピュータ同士(終わるまで戦う)
+		else:#コンピュータ同士の場合，終わるまで戦う（ボタンは表示されない）
 			while not self.isFinished():
 				if self.isSenkouTurn:
 					col,row = self.senkouP.action(self.banmenData)
@@ -58,29 +62,35 @@ class Battle:
 				self.banmen.printData()
 				self.banmenData = self.banmen.getData()
 
-
+	# 決着が付いたかどうか
 	def isFinished(self):
 		isFinished = False
 		if self.isSenkouWon():
 			isFinished = True
 			self.winner = 1
+			print "先攻の勝ち"
 		elif self.isKoukouWon():
 			isFinished = True
 			self.winner = 2
+			print "後攻の勝ち"
 		elif self.isDraw():
 			isFinished = True
 			self.winner = 0
+			print "引き分け"
 		else:
 			isFinished = False
 
+		# 揃ったボタンの背景を赤くする
 		if isFinished:
 			self.buttonColoring(self.banmen.getAlignedColRow(),'red')
 		return isFinished
 
+
+	# 勝者を返す
 	def getWinner(self):
 		return self.winner
 
-
+	# ボタンを生成する
 	def createButton(self,size):
 		self.buttons=[]
 		for row in range(size):
@@ -90,14 +100,18 @@ class Battle:
 				button.grid(column=col,row=row)
 				self.buttons[row].append(button)
 
+	# 押されたボタンの座標に応じた行動
 	def callback(self,col,row):
 		def x():
+			# どちらも置いていない場所　かつ　決着が付いていない
 			if self.buttons[row][col]['text'] == u'　' and not self.isFinished():
+				# 先攻の場合'◯'を表示し，碁を置く
 				if self.isSenkouTurn:
 					self.buttons[row][col]['text'] = u'◯'
 					self.banmen.put(col,row,self.isSenkouTurn)
 					self.banmenData = self.banmen.getData()
 					self.isSenkouTurn = False
+					# 決着が付いていなければコンピュータの手を打つ
 					if not self.isFinished():
 						if self.isSenkouHuman and not self.isKoukouHuman:
 							col2,row2 = self.koukouP.action(self.banmenData)
@@ -119,13 +133,13 @@ class Battle:
 						self.isFinished()
 		return x
 
-
-
+	# ボタンのテキストの更新
 	def banmenUpdate(self,data):
 		for row in range(len(data)):
 			for col in range(len(data)):
 				self.buttons[row][col]['text'] = self.circleOrCrossMark(data[row][col])
 
+	# 数字に応じたテキストを返す
 	def circleOrCrossMark(self,number):
 		if number == 1:
 			return u'◯'
@@ -134,22 +148,26 @@ class Battle:
 		else:
 			return u'　'
 
+	# ボタンの背景色を変更する
 	def buttonColoring(self,alignedColRow,color):
 		if self.isSenkouHuman or self.isKoukouHuman:
 			for colRow in alignedColRow:
 				col,row = colRow
 				self.buttons[row][col]['highlightbackground'] = color
 
+	# 先攻が勝っているかどうか
 	def isSenkouWon(self):
 		return self.banmen.judge() == 1
 
+	# 後攻が勝っているかどうか
 	def isKoukouWon(self):
 		return self.banmen.judge() == 2
 
+	# 引き分けかどうか
 	def isDraw(self):
 		return self.banmen.isAllFilled()
 
-
+	# 初期化（プレイヤー情報は保持）
 	def reset(self):
 		if self.winner != -1:
 			self.buttonColoring(self.banmen.getAlignedColRow(),'white')
