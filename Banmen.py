@@ -4,8 +4,9 @@
 class Banmen:
 	#盤面初期化
 	def __init__(self):
-		self.size = 10			#盤面の大きさ
+		self.size = 7			#盤面の大きさ
 		self.alignedColRow = []	#揃った座標リスト
+		self.alignedNum = -1	#揃った数字
 		self.data=[]			#盤面を二次元配列で保持
 		# すべて0にする
 		for row in range(self.size):
@@ -199,6 +200,19 @@ class Banmen:
 					return False
 		return True
 
+	# 終了判定
+	def isFinished(self):
+		self.alignedNum = -1
+		alignedNum = self.judge()
+		if alignedNum == 1 or alignedNum == 2 or self.isAllFilled():
+			self.alignedNum = alignedNum
+			return True
+		else:
+			return False
+
+	def getAlignedNumber(self):
+		return self.alignedNum
+
 	# 盤面表示
 	def printData(self):
 		for row in range(self.size):
@@ -217,4 +231,7 @@ class Banmen:
 			for col in range(self.size):
 				self.data[row][col] = 0
 		self.alignedColRow = []
+
+	def setData(self,data):
+		self.data = [d[:] for d in data]
 

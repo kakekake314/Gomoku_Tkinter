@@ -6,6 +6,7 @@ from Banmen import Banmen
 from Player import Player
 from RandomPlayer import RandomPlayer
 from AlphaRandomPlayer import AlphaRandomPlayer
+from MonteCalroPlayer import MonteCalroPlayer
 import Tkinter as tk
 
 # ２人のプレイヤーが対戦を行う
@@ -26,18 +27,20 @@ class Battle:
 		if senkouName == u'人間':
 			self.isSenkouHuman = True
 		elif senkouName == u'ランダム君':
-			self.senkouP = RandomPlayer(u'ランダム君',True)
-		elif senkouName == 'com':
-			# self.senkouP = ComputerPlayer('com',True)
-			self.senkouP = AlphaRandomPlayer('com',True)
+			self.senkouP = RandomPlayer(senkouName,True)
+		elif senkouName == u'強いランダム君':
+			self.senkouP = AlphaRandomPlayer(senkouName,True)
+		elif senkouName == u'モンテカルロ君':
+			self.senkouP = MonteCalroPlayer(senkouName,True)
 
 		if koukouName == u'人間':
 			self.isKoukouHuman = True
 		elif koukouName == u'ランダム君':
-			self.koukouP = RandomPlayer(u'ランダム君',False)
-		elif koukouName == 'com':
-			# self.koukouName = ComputerPlayer('com',True)
-			self.koukouP = AlphaRandomPlayer('com',False)
+			self.koukouP = RandomPlayer(koukouName,False)
+		elif koukouName == u'強いランダム君':
+			self.koukouP = AlphaRandomPlayer(koukouName,False)
+		elif koukouName == u'モンテカルロ君':
+			self.koukouP = MonteCalroPlayer(koukouName,False)
 
 	# 対戦を進める
 	def progress(self):
@@ -64,27 +67,20 @@ class Battle:
 
 	# 決着が付いたかどうか
 	def isFinished(self):
-		isFinished = False
-		if self.isSenkouWon():
-			isFinished = True
-			self.winner = 1
-			print "先攻の勝ち"
-		elif self.isKoukouWon():
-			isFinished = True
-			self.winner = 2
-			print "後攻の勝ち"
-		elif self.isDraw():
-			isFinished = True
-			self.winner = 0
-			print "引き分け"
+		if self.banmen.isFinished():
+			self.winner = self.banmen.getAlignedNumber()
+			if self.winner == 1 or self.winner == 2:
+				# 揃ったボタンの背景を赤くする
+				self.buttonColoring(self.banmen.getAlignedColRow(),'red')
+			if self.winner == 1:
+				print "先攻の勝ち"
+			elif self.winner == 2:
+				print "後攻の勝ち"
+			else:
+				print "引き分け"
+			return True
 		else:
-			isFinished = False
-
-		# 揃ったボタンの背景を赤くする
-		if isFinished:
-			self.buttonColoring(self.banmen.getAlignedColRow(),'red')
-		return isFinished
-
+			return False
 
 	# 勝者を返す
 	def getWinner(self):
