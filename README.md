@@ -6,6 +6,11 @@
 
 # Gomoku_Tkinter
 PythonのTkinterを使って五目並べを作りました．  
+  
+予めやっておくこと  
+`pip install chainerrl`  
+`brew install cmake`  
+  
 `Python Gomoku.py`でプレイヤー選択画面が表示される  
 プレイヤーを選択してスタートボタンでゲーム開始
 
