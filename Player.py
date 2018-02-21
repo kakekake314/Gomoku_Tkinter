@@ -13,7 +13,7 @@ class Player:
 	def action(self,data):
 		for row in range(len(data)):
 			for col in range(len(data)):
-				if data[row][col] == 0:
+				if data[row][col] == 3:
 					return col,row
 
 	# 名前を返す

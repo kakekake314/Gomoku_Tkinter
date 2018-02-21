@@ -1,25 +1,56 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+import numpy as np
+
 class Banmen:
 	#盤面初期化
 	def __init__(self):
 		self.size = 7			#盤面の大きさ
+		self.winNum = 5			#何個並べたら勝ちか
 		self.alignedColRow = []	#揃った座標リスト
-		self.alignedNum = -1	#揃った数字
+		self.alignedNum = -1	#揃った数字(勝者)
 		self.data=[]			#盤面を二次元配列で保持
+		self.missed = False		#置けない所に置こうとしたかどうか
+		self.done = False		#終了判定
 		# すべて0にする
 		for row in range(self.size):
 			self.data.append([])
 			for col in range(self.size):
-				self.data[row].append(0)
+				self.data[row].append(3)
 
 	# 碁を置く（１：◯ , ２：✕）
-	def put(self,col,row,isCircle):
+	def put2D(self,col,row,isCircle):
+		if self.data[row][col] != 3:
+			self.missed = True
+			self.done = True
+			#間違えてない方を勝者とする
+			if isCircle:
+				self.alignedNum = 2
+			else:
+				self.alignedNum = 1
 		if isCircle:
 			self.data[row][col] = 1
 		else:
 			self.data[row][col] = 2
+
+	#一次元パターン
+	def put(self,num,isCircle):
+		oneDData = self.convertTo1D()
+		if oneDData[num] != 3:
+			self.missed = True
+			self.done = True
+			# if isCircle:
+			# 	self.alignedNum = 2
+			# else:
+			# 	self.alignedNum = 1
+		else:
+			if isCircle:
+				oneDData[num] = 1
+			else:
+				oneDData[num] = 2
+			self.convertTo2D(oneDData)
+
 
 	# 左右確認
 	def sideJudge(self,col,row):
@@ -30,7 +61,7 @@ class Banmen:
 		judgeData = self.data[row][col]
 
 		# 右方向に確認
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if col+i+1 >= self.size:
 				break
 			if judgeData != self.data[row][col+i+1]:
@@ -41,7 +72,7 @@ class Banmen:
 			colRowList.append([col+i+1,row])
 
 		# ５個揃っていたら
-		if count == 5:
+		if count == self.winNum:
 			judge = True
 			self.alignedColRow = colRowList
 			return judge
@@ -50,7 +81,7 @@ class Banmen:
 		colRowList = []
 		colRowList.append([col,row])
 		count = 1
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if col-i-1 <= -1:
 				break
 			if judgeData != self.data[row][col-i-1]:
@@ -59,7 +90,7 @@ class Banmen:
 			colRowList.append([col-i-1,row])
 
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 
@@ -72,7 +103,7 @@ class Banmen:
 		colRowList = []
 		colRowList.append([col,row])
 		judgeData = self.data[row][col]
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row+i+1 >= self.size:
 				break
 			if judgeData != self.data[row+i+1][col]:
@@ -80,7 +111,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col,row+i+1])
 
-		if count == 5:
+		if count == self.winNum:
 			judge = True
 			self.alignedColRow = colRowList
 			return judge
@@ -88,7 +119,7 @@ class Banmen:
 		count = 1
 		colRowList = []
 		colRowList.append([col,row])
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row-i-1 <= -1:
 				break
 			if judgeData != self.data[row-i-1][col]:
@@ -96,7 +127,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col,row-i-1])
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 
@@ -109,7 +140,7 @@ class Banmen:
 		colRowList = []
 		colRowList.append([col,row])
 		judgeData = self.data[row][col]
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row+i+1 >= self.size or col+i+1 >= self.size:
 				break
 			if judgeData != self.data[row+i+1][col+i+1]:
@@ -117,7 +148,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col+i+1,row+i+1])
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 			return judge
@@ -125,7 +156,7 @@ class Banmen:
 		count = 1
 		colRowList = []
 		colRowList.append([col,row])
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row-i-1 <= -1 or col-i-1 <= -1:
 				break
 			if judgeData != self.data[row-i-1][col-i-1]:
@@ -133,7 +164,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col-i-1,row-i-1])
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 
@@ -146,7 +177,7 @@ class Banmen:
 		colRowList = []
 		colRowList.append([col,row])
 		judgeData = self.data[row][col]
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row-i-1 >= -1 or col+i+1 >= self.size:
 				break
 			if judgeData != self.data[row-i-1][col+i+1]:
@@ -154,7 +185,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col+i-1,row-i-1])
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 			return judge
@@ -162,7 +193,7 @@ class Banmen:
 		count = 1
 		colRowList = []
 		colRowList.append([col,row])
-		for i in range(4):
+		for i in range(self.winNum - 1):
 			if row+i+1 >= self.size or col-i-1 <= -1:
 				break
 			if judgeData != self.data[row+i+1][col-i-1]:
@@ -170,7 +201,7 @@ class Banmen:
 			count += 1
 			colRowList.append([col-i-1,row+i+1])
 
-		if count == 5:
+		if count == self.winNum:
 			self.alignedColRow = colRowList
 			judge = True
 
@@ -182,7 +213,7 @@ class Banmen:
 		judgeData = 0
 		for row in range(self.size):
 			for col in range(self.size):
-				if self.data[row][col] != 0:
+				if self.data[row][col] != 3:
 					judge = self.sideJudge(col,row) or self.verticalJudge(col,row) or self.rDiagonalJudge(col,row) or self.lDiagonalJudge(col,row)
 					if judge:
 						judgeData = self.data[row][col]
@@ -196,16 +227,20 @@ class Banmen:
 	def isAllFilled(self):
 		for row in range(self.size):
 			for col in range(self.size):
-				if self.data[row][col] == 0:
+				if self.data[row][col] == 3:
 					return False
 		return True
 
 	# 終了判定
 	def isFinished(self):
-		self.alignedNum = -1
 		alignedNum = self.judge()
-		if alignedNum == 1 or alignedNum == 2 or self.isAllFilled():
+		if self.getMissed():
+			self.alignedNum = -1
+			self.done = True
+			return True
+		elif alignedNum == 1 or alignedNum == 2 or self.isAllFilled():
 			self.alignedNum = alignedNum
+			self.done = True
 			return True
 		else:
 			return False
@@ -217,7 +252,7 @@ class Banmen:
 	def printData(self):
 		for row in range(self.size):
 			for col in range(self.size):
-				print self.data[row][col],
+				print int(self.data[row][col]),
 			print ' '
 		print' '
 
@@ -225,12 +260,43 @@ class Banmen:
 	def getData(self):
 		return self.data
 
+	def getMissed(self):
+		return self.missed
+
+	def convertTo1D(self):
+		oneDData = []
+		for row in range(self.size):
+			for col in range(self.size):
+				oneDData.append(self.data[row][col])
+		return np.array(oneDData,dtype=np.float32)
+
+	def convertTo2D(self,data):
+		col = 0
+		row = 0
+		for d in data:
+			self.data[row][col] = d
+			col += 1
+			if col == self.size:
+				col = 0
+				row += 1
+
+	def get1DNum(self,col,row):
+		count = 0
+		for r in range(self.size):
+			for c in range(self.size):
+				if c == col and r == row:
+					return count
+				count += 1
+
+
 	# 盤面を初期化する
 	def reset(self):
 		for row in range(self.size):
 			for col in range(self.size):
-				self.data[row][col] = 0
+				self.data[row][col] = 3
 		self.alignedColRow = []
+		self.missed = False
+		self.done = False
 
 	def setData(self,data):
 		self.data = [d[:] for d in data]

@@ -18,4 +18,4 @@ class RandomPlayer(Player):
 
 	# 置けるかどうか確認
 	def canPut(self,banmen,col,row):
-		return banmen[row][col] == 0
+		return banmen[row][col] == 3
