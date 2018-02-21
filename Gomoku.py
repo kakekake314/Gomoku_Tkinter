@@ -43,7 +43,7 @@ class Gomoku:
 		self.senkouLabel.pack(side=tk.LEFT)
 		self.comboboxS = ttk.Combobox(self.senkouFrame,textvariable = self.senkouName)
 		self.comboboxS.bind('<<ComboboxSelected>>',self.comboboxSelected)
-		self.comboboxS['values'] = (u'人間',u'ランダム君',u'強いランダム君',u'モンテカルロ君')
+		self.comboboxS['values'] = (u'人間',u'ランダム君',u'強いランダム君','DQN')
 		self.comboboxS.pack()
 
 		# 後攻の設定
@@ -51,7 +51,7 @@ class Gomoku:
 		self.koukouLabel.pack(side=tk.LEFT)
 		self.comboboxK = ttk.Combobox(self.koukouFrame,textvariable = self.koukouName)
 		self.comboboxK.bind('<<ComboboxSelected>>',self.comboboxSelected)
-		self.comboboxK['values'] = (u'人間',u'ランダム君',u'強いランダム君',u'モンテカルロ君')
+		self.comboboxK['values'] = (u'人間',u'ランダム君',u'強いランダム君','DQN')
 		self.comboboxK.pack()
 
 		# スタートボタン

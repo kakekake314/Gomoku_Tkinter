@@ -7,6 +7,7 @@ from Player import Player
 from RandomPlayer import RandomPlayer
 from AlphaRandomPlayer import AlphaRandomPlayer
 from MonteCalroPlayer import MonteCalroPlayer
+import DQN
 import Tkinter as tk
 
 # ２人のプレイヤーが対戦を行う
@@ -30,8 +31,10 @@ class Battle:
 			self.senkouP = RandomPlayer(senkouName,True)
 		elif senkouName == u'強いランダム君':
 			self.senkouP = AlphaRandomPlayer(senkouName,True)
-		elif senkouName == u'モンテカルロ君':
-			self.senkouP = MonteCalroPlayer(senkouName,True)
+		# elif senkouName == u'モンテカルロ君':
+		# 	self.senkouP = MonteCalroPlayer(senkouName,True)
+		elif senkouName == 'DQN':
+			self.senkouP = DQN.DQNPlayer(senkouName,True)
 
 		if koukouName == u'人間':
 			self.isKoukouHuman = True
@@ -39,8 +42,10 @@ class Battle:
 			self.koukouP = RandomPlayer(koukouName,False)
 		elif koukouName == u'強いランダム君':
 			self.koukouP = AlphaRandomPlayer(koukouName,False)
-		elif koukouName == u'モンテカルロ君':
-			self.koukouP = MonteCalroPlayer(koukouName,False)
+		# elif koukouName == u'モンテカルロ君':
+		# 	self.koukouP = MonteCalroPlayer(koukouName,False)
+		elif koukouName == 'DQN':
+			self.koukouP = DQN.DQNPlayer(koukouName,False)
 
 	# 対戦を進める
 	def progress(self):
@@ -49,18 +54,18 @@ class Battle:
 			self.createButton(len(self.banmenData))
 			if not self.isSenkouHuman:#先攻がコンピュータの時は先に打っておく
 				col,row = self.senkouP.action(self.banmenData)
-				self.banmen.put(col,row,True)
+				self.banmen.put2D(col,row,True)
 				self.banmenUpdate(self.banmen.getData())
 				self.isSenkouTurn = False
 		else:#コンピュータ同士の場合，終わるまで戦う（ボタンは表示されない）
 			while not self.isFinished():
 				if self.isSenkouTurn:
 					col,row = self.senkouP.action(self.banmenData)
-					self.banmen.put(col,row,True)
+					self.banmen.put2D(col,row,True)
 					self.isSenkouTurn = False
 				else:
 					col,row = self.koukouP.action(self.banmenData)
-					self.banmen.put(col,row,False)
+					self.banmen.put2D(col,row,False)
 					self.isSenkouTurn = True
 				self.banmen.printData()
 				self.banmenData = self.banmen.getData()
@@ -76,6 +81,8 @@ class Battle:
 				print "先攻の勝ち"
 			elif self.winner == 2:
 				print "後攻の勝ち"
+			elif self.winner == -1:
+				print "置きミス"
 			else:
 				print "引き分け"
 			return True
@@ -104,26 +111,26 @@ class Battle:
 				# 先攻の場合'◯'を表示し，碁を置く
 				if self.isSenkouTurn:
 					self.buttons[row][col]['text'] = u'◯'
-					self.banmen.put(col,row,self.isSenkouTurn)
+					self.banmen.put2D(col,row,self.isSenkouTurn)
 					self.banmenData = self.banmen.getData()
 					self.isSenkouTurn = False
 					# 決着が付いていなければコンピュータの手を打つ
 					if not self.isFinished():
 						if self.isSenkouHuman and not self.isKoukouHuman:
 							col2,row2 = self.koukouP.action(self.banmenData)
-							self.banmen.put(col2,row2,False)
+							self.banmen.put2D(col2,row2,False)
 							self.isSenkouTurn = True
 						self.banmenUpdate(self.banmen.getData())
 						self.isFinished()
 				else:
 					self.buttons[row][col]['text'] = u'✕'
-					self.banmen.put(col,row,self.isSenkouTurn)
+					self.banmen.put2D(col,row,self.isSenkouTurn)
 					self.banmenData = self.banmen.getData()
 					self.isSenkouTurn = True
 					if not self.isFinished():
 						if self.isKoukouHuman and not self.isSenkouHuman:
 							col2,row2 = self.senkouP.action(self.banmenData)
-							self.banmen.put(col2,row2,True)
+							self.banmen.put2D(col2,row2,True)
 							self.isSenkouTurn = False
 						self.banmenUpdate(self.banmen.getData())
 						self.isFinished()
@@ -150,18 +157,6 @@ class Battle:
 			for colRow in alignedColRow:
 				col,row = colRow
 				self.buttons[row][col]['highlightbackground'] = color
-
-	# 先攻が勝っているかどうか
-	def isSenkouWon(self):
-		return self.banmen.judge() == 1
-
-	# 後攻が勝っているかどうか
-	def isKoukouWon(self):
-		return self.banmen.judge() == 2
-
-	# 引き分けかどうか
-	def isDraw(self):
-		return self.banmen.isAllFilled()
 
 	# 初期化（プレイヤー情報は保持）
 	def reset(self):
