@@ -6,7 +6,7 @@ import chainer.links as L
 import chainerrl
 import numpy as np
 from Banmen import Banmen
-from AlphaRandomPlayer2 import AlphaRandomPlayer2
+from TestPlayer import TestPlayer
 from Player import Player
 
 
@@ -34,7 +34,7 @@ class DQNPlayer(Player,object):
 		super(DQNPlayer,self).__init__(name,isSenkou)
 		banmen = Banmen()
 
-		player = AlphaRandomPlayer2("改良ランダム君",True,banmen)
+		player = TestPlayer("学習用プレイヤー",True,banmen)
 
 		obs_size = 49
 		n_actions = 49
