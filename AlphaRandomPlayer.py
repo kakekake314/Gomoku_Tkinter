@@ -28,7 +28,7 @@ class AlphaRandomPlayer(Player):
 		if col<0 or row<0 or col>=len(banmen) or row>=len(banmen):
 			return False
 		else:
-			return banmen[row][col] == 0
+			return banmen[row][col] == 3
 
 	# 左右確認
 	def sideJudge(self,data,col,row):
@@ -202,7 +202,7 @@ class AlphaRandomPlayer(Player):
 		self.BandAList = []
 		for row in range(len(data)):
 			for col in range(len(data)):
-				if data[row][col] != 0:
+				if data[row][col] != 3:
 					judge = self.sideJudge(data,col,row) or self.verticalJudge(data,col,row) or self.rDiagonalJudge(data,col,row) or self.lDiagonalJudge(data,col,row)
 					if judge:
 						judgeData = data[row][col]
