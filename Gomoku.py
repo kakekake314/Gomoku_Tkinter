@@ -58,12 +58,16 @@ class Gomoku:
 		self.startButton = tk.Button(self.settingFrame, text = u'スタート',command = self.start)
 		self.startButton.pack()
 
+		# リスタートボタンとプレイヤー変更ボタンが置かれるフレーム
+		self.restartFrame = tk.Frame(self.settingFrame)
+		self.restartFrame.pack()
+
 		# プレイヤー変更ボタン
-		self.changePlayerButton = tk.Button(self.settingFrame, text = u'プレイヤー変更',command = self.changePlayer,state = 'disabled')
-		self.changePlayerButton.pack()
+		self.changePlayerButton = tk.Button(self.restartFrame, text = u'プレイヤー変更',command = self.changePlayer,state = 'disabled')
+		self.changePlayerButton.pack(side=tk.LEFT)
 
 		# リスタートボタン
-		self.restartButton = tk.Button(self.settingFrame, text = u'リスタート',command = self.restart,state='disabled')
+		self.restartButton = tk.Button(self.restartFrame, text = u'リスタート',command = self.restart,state='disabled')
 		self.restartButton.pack()
 
 		# フレームの設置
