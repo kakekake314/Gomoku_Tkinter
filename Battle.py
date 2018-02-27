@@ -58,17 +58,29 @@ class Battle:
 				self.banmenUpdate(self.banmen.getData())
 				self.isSenkouTurn = False
 		else:#コンピュータ同士の場合，終わるまで戦う（ボタンは表示されない）
-			while not self.isFinished():
-				if self.isSenkouTurn:
-					col,row = self.senkouP.action(self.banmenData)
-					self.banmen.put2D(col,row,True)
-					self.isSenkouTurn = False
-				else:
-					col,row = self.koukouP.action(self.banmenData)
-					self.banmen.put2D(col,row,False)
-					self.isSenkouTurn = True
-				self.banmen.printData()
-				self.banmenData = self.banmen.getData()
+			count = 0
+			senkouWin = 0
+			koukouWin = 0
+			while count < 100:
+				self.banmen.reset()
+				while not self.isFinished():
+					if self.isSenkouTurn:
+						col,row = self.senkouP.action(self.banmenData)
+						self.banmen.put2D(col,row,True)
+						self.isSenkouTurn = False
+					else:
+						col,row = self.koukouP.action(self.banmenData)
+						self.banmen.put2D(col,row,False)
+						self.isSenkouTurn = True
+					# self.banmen.printData()
+					self.banmenData = self.banmen.getData()
+				if self.banmen.getAlignedNumber() == 1:
+					senkouWin += 1
+				elif self.banmen.getAlignedNumber() == 2:
+					koukouWin += 1
+				count += 1
+			print senkouWin
+			print koukouWin
 
 	# 決着が付いたかどうか
 	def isFinished(self):
