@@ -32,6 +32,8 @@ class DQNPlayer(Player,object):
 
 	def __init__(self,name,isSenkou):
 		super(DQNPlayer,self).__init__(name,isSenkou)
+		self.loadFile = "result/result6_20000"
+		self.outputFile = "result/result7_"
 		self.learning(0)
 
 
@@ -82,8 +84,8 @@ class DQNPlayer(Player,object):
 			target_update_interval=100)
 
 
-		agent_p1.load("result/result6_20000")
-		agent_p2.load("result/result6_20000")
+		agent_p1.load(self.loadFile)
+		agent_p2.load(self.loadFile)
 
 		n_episodes = episode
 
@@ -136,6 +138,15 @@ class DQNPlayer(Player,object):
 				# print reward
 				banmen.printData()
 			if i % 10000 == 0:
-				agent_p1.save("result/result6_"+str(i))
+				agent_p1.save(self.outputFile+str(i))
 
 		self.agent = agent_p1
+
+	def setLoadFile(self,filename):
+		self.loadFile = filename
+	def setOutputFile(self,filename):
+		self.outputFile = filename
+	def getLoadFile(self):
+		return self.loadFile
+	def getOutputFile(self):
+		return self.outputFile

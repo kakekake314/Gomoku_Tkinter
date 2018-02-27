@@ -5,6 +5,9 @@ import Tkinter as tk
 from tkinter import ttk
 from Battle import Battle
 from time import sleep
+import tkinter.filedialog as tkfd
+import DQN
+import os
 
 class Gomoku:
 	def roop(self):
@@ -70,6 +73,10 @@ class Gomoku:
 		self.restartButton = tk.Button(self.restartFrame, text = u'リスタート',command = self.restart,state='disabled')
 		self.restartButton.pack()
 
+		# 学習ボタン
+		self.learningButton = tk.Button(self.settingFrame, text = u'学習' ,command = self.learning)
+		self.learningButton.pack()
+
 		# フレームの設置
 		self.settingFrame.pack(padx=100)
 		self.battleFrame.pack()
@@ -108,7 +115,51 @@ class Gomoku:
 		self.restartButton.configure(state='disabled')
 		self.battle.reset()
 
+	# 学習を行うボタン
+	def learning(self):
+		self.learningButton.configure(state='disabled')
+		self.dqn = DQN.DQNPlayer("learning",True)
+		self.learningWindow = tk.Toplevel()
+		self.loadFileFrame = tk.Frame(self.learningWindow)
+		self.loadFileFrame.pack()
+		self.outputFileFrame = tk.Frame(self.learningWindow)
+		self.outputFileFrame.pack()
+		self.episodeFrame = tk.Frame(self.learningWindow)
+		self.episodeFrame.pack()
+		self.loadFileLabel = tk.Label(self.loadFileFrame,text = u'読み込みファイル名：')
+		self.loadFileLabel.pack(side=tk.LEFT)
+		self.loadFileLabel2 = tk.Label(self.loadFileFrame,text = self.dqn.getLoadFile())
+		self.loadFileLabel2.pack(side=tk.LEFT)
+		self.selectButton = tk.Button(self.loadFileFrame,text = u'選択',command = self.fileSelection)
+		self.selectButton.pack()
+		self.outputFileLabel = tk.Label(self.outputFileFrame,text = u'出力ファイル名：')
+		self.outputFileLabel.pack(side=tk.LEFT)
+		self.editBox = tk.Entry(self.outputFileFrame)
+		self.editBox.insert(tk.END,self.dqn.getOutputFile())
+		self.editBox.pack()
+		self.episodeLabel = tk.Label(self.episodeFrame,text = u'エピソード数')
+		self.episodeLabel.pack(side=tk.LEFT)
+		self.episodeNumber = tk.StringVar()
+		self.episodeNumber.set('10000')
+		self.combobox = ttk.Combobox(self.episodeFrame,textvariable = self.episodeNumber)
+		self.combobox['values'] = ('10000','20000')
+		self.combobox.pack()
+		self.learningStartButton = tk.Button(self.learningWindow,text = u'学習スタート',command = self.learningStart)
+		self.learningStartButton.pack()
 
+
+	def fileSelection(self):
+		self.iDir = os.path.abspath(os.path.dirname(__file__))
+		self.iDir += "/result"
+		self.filename = tkfd.askdirectory(initialdir=self.iDir)
+		self.loadFileLabel2['text'] = self.filename
+
+	def learningStart(self):
+		self.dqn.setLoadFile(self.loadFileLabel2['text'])
+		self.dqn.setOutputFile(self.editBox.get())
+		print "エピソード数"+self.episodeNumber.get()
+		self.root.destroy()
+		self.dqn.learning(int(self.episodeNumber.get()))
 
 
 gomoku = Gomoku()
