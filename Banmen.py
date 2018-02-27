@@ -252,7 +252,12 @@ class Banmen:
 	def printData(self):
 		for row in range(self.size):
 			for col in range(self.size):
-				print int(self.data[row][col]),
+				if int(self.data[row][col]) == 3:
+					print '-',
+				elif int(self.data[row][col]) == 1:
+					print '◯',
+				elif int(self.data[row][col]) == 2:
+					print '✕',
 			print ' '
 		print' '
 
@@ -300,4 +305,12 @@ class Banmen:
 
 	def setData(self,data):
 		self.data = [d[:] for d in data]
+
+	def change(self):
+		for row in range(self.size):
+			for col in range(self.size):
+				if self.data[row][col] == 1:
+					self.data[row][col] = 2
+				elif self.data[row][col] == 2:
+					self.data[row][col] = 1
 
