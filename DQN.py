@@ -145,7 +145,7 @@ class DQNPlayer(Player,object):
 				draw = 0
 				player.setCount(0)
 				# print reward
-				# banmen.printData()
+				banmen.printData()
 			if i % 10000 == 0:
 				agent_p1.save("result/result6_"+str(i))
 
