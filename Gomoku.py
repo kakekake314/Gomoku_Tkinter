@@ -84,7 +84,7 @@ class Gomoku:
 		self.startButton.configure(state='disabled')
 		self.comboboxS.configure(state='disabled')
 		self.comboboxK.configure(state='disabled')
-		# リスタートボタンを押せるようにする
+		# リスタートボタンとプレイヤー変更ボタンを押せるようにする
 		self.restartButton.configure(state='normal')
 		self.changePlayerButton.configure(state='normal')
 		# 対戦スタート
@@ -96,6 +96,7 @@ class Gomoku:
 		self.battle.reset()
 		self.battle.progress()
 
+	# プレイヤー変更ボタンが押されたときのイベントう
 	def changePlayer(self):
 		self.startButton.configure(state='normal')
 		self.comboboxS.configure(state='normal')
