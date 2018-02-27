@@ -152,29 +152,7 @@ class DQNPlayer(Player,object):
 		self.agent = agent_p1
 
 
-
-	def action(self,banmen):
-
-		action = self.agent.act(self.convertTo1D(banmen))
-		col,row = self.getColRow(banmen,action)
-		return col,row
-
-	def convertTo1D(self,data):
-		oneDData = []
-		for row in range(len(data)):
-			for col in range(len(data)):
-				oneDData.append(data[row][col])
-		return np.array(oneDData,dtype=np.float32)
-
-	def getColRow(self,data,action):
-		num = 0
-		for row in range(len(data)):
-			for col in range(len(data)):
-				if num == action:
-					return col,row
-				num += 1
-
-
+dqn = DQNPlayer("testes",True)
 
 
 
