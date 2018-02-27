@@ -19,3 +19,6 @@ class Player:
 	# 名前を返す
 	def getName(self):
 		return self.name
+
+	def setTurn(self,turn):
+		self.isSenkou = turn
