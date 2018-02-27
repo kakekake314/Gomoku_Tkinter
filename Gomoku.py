@@ -96,7 +96,7 @@ class Gomoku:
 		self.battle.reset()
 		self.battle.progress()
 
-	# プレイヤー変更ボタンが押されたときのイベントう
+	# プレイヤー変更ボタンが押されたときのイベント
 	def changePlayer(self):
 		self.startButton.configure(state='normal')
 		self.comboboxS.configure(state='normal')
