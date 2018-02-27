@@ -99,22 +99,23 @@ class DQNPlayer(Player,object):
 			agents = [agent_p1,agent_p2]
 			turn = np.random.choice([0,1])
 			last_state = None
-			boolTurn = True
-			if turn == 0:
-				boolTurn = True
-			else:
-				boolTurn = False
+			# boolTurn = True
+			# if turn == 0:
+			# 	boolTurn = True
+			# else:
+			# 	boolTurn = False
 			while not banmen.isFinished():
 				action = agents[turn].act_and_train(banmen.convertTo1D(),reward)
 
-				banmen.put(action,boolTurn)
+				banmen.put(action,True)
 				# banmen.printData()
 
 
 
 				if banmen.isFinished():
 					alignedNum = banmen.getAlignedNumber()
-					if (alignedNum == 1 and turn == 0) or (alignedNum == 2 and turn == 1):
+					# if (alignedNum == 1 and turn == 0) or (alignedNum == 2 and turn == 1):
+					if alignedNum == 1:
 						reward = 1
 						win += 1
 					elif alignedNum == 0:
@@ -129,7 +130,7 @@ class DQNPlayer(Player,object):
 						agents[1 if turn == 0 else 0].stop_episode_and_train(last_state, reward*-1,True)
 				else:
 					last_state = banmen.convertTo1D()
-					# banmen.change()
+					banmen.change()
 					if turn == 0:
 						turn = 1
 						boolTurn = False
