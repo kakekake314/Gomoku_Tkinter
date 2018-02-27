@@ -83,8 +83,8 @@ class DQNPlayer(Player,object):
 			target_update_interval=100)
 
 
-		agent_p1.load("result_20000")
-		agent_p2.load("result_20000")
+		agent_p2.load("result/result6_20000")
+		agent_p2.load("result/result6_20000")
 
 		# n_episodes = 20000
 		n_episodes = 0
@@ -146,7 +146,7 @@ class DQNPlayer(Player,object):
 				# print reward
 				# banmen.printData()
 			if i % 10000 == 0:
-				agent_p1.save("result_"+str(i))
+				agent_p1.save("result/result6_"+str(i))
 
 		self.agent = agent_p1
 
