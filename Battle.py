@@ -61,6 +61,9 @@ class Battle:
 			count = 0
 			senkouWin = 0
 			koukouWin = 0
+			draw = 0
+			miss = 0
+			# 100試合行う
 			while count < 100:
 				self.banmen.reset()
 				while not self.isFinished():
@@ -72,31 +75,34 @@ class Battle:
 						col,row = self.koukouP.action(self.banmenData)
 						self.banmen.put2D(col,row,False)
 						self.isSenkouTurn = True
-					# self.banmen.printData()
 					self.banmenData = self.banmen.getData()
-				if self.banmen.getAlignedNumber() == 1:
+				if self.winner == 1:
 					senkouWin += 1
-				elif self.banmen.getAlignedNumber() == 2:
+				elif self.winner == 2:
 					koukouWin += 1
+				elif self.winner == -1:
+					miss += 1
+				else:
+					draw += 1
 				count += 1
-			print senkouWin
-			print koukouWin
+			print "先攻:"+str(senkouWin)+",後攻:"+str(koukouWin)+",引き分け:"+str(draw)+",置きミス:"+str(miss)
 
 	# 決着が付いたかどうか
 	def isFinished(self):
 		if self.banmen.isFinished():
 			self.winner = self.banmen.getAlignedNumber()
-			if self.winner == 1 or self.winner == 2:
-				# 揃ったボタンの背景を赤くする
-				self.buttonColoring(self.banmen.getAlignedColRow(),'red')
-			if self.winner == 1:
-				print "先攻の勝ち"
-			elif self.winner == 2:
-				print "後攻の勝ち"
-			elif self.winner == -1:
-				print "置きミス"
-			else:
-				print "引き分け"
+			if self.isSenkouHuman or self.isKoukouHuman:
+				if self.winner == 1 or self.winner == 2:
+					# 揃ったボタンの背景を赤くする
+					self.buttonColoring(self.banmen.getAlignedColRow(),'red')
+				if self.winner == 1:
+					print "先攻の勝ち"
+				elif self.winner == 2:
+					print "後攻の勝ち"
+				elif self.winner == -1:
+					print "置きミス"
+				else:
+					print "引き分け"
 			return True
 		else:
 			return False
@@ -165,10 +171,9 @@ class Battle:
 
 	# ボタンの背景色を変更する
 	def buttonColoring(self,alignedColRow,color):
-		if self.isSenkouHuman or self.isKoukouHuman:
-			for colRow in alignedColRow:
-				col,row = colRow
-				self.buttons[row][col]['highlightbackground'] = color
+		for colRow in alignedColRow:
+			col,row = colRow
+			self.buttons[row][col]['highlightbackground'] = color
 
 	# 初期化（プレイヤー情報は保持）
 	def reset(self):

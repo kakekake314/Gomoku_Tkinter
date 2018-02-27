@@ -32,11 +32,10 @@ class DQNPlayer(Player,object):
 
 	def __init__(self,name,isSenkou):
 		super(DQNPlayer,self).__init__(name,isSenkou)
-		self.learning()
+		self.learning(0)
 
 
 	def action(self,banmen):
-
 		action = self.agent.act(self.convertTo1D(banmen))
 		col,row = self.getColRow(banmen,action)
 		return col,row
@@ -56,7 +55,7 @@ class DQNPlayer(Player,object):
 					return col,row
 				num += 1
 
-	def learning(self):
+	def learning(self,episode):
 		banmen = Banmen()
 
 		player = TestPlayer("学習用プレイヤー",True,banmen)
@@ -83,11 +82,10 @@ class DQNPlayer(Player,object):
 			target_update_interval=100)
 
 
-		agent_p2.load("result/result6_20000")
+		agent_p1.load("result/result6_20000")
 		agent_p2.load("result/result6_20000")
 
-		# n_episodes = 20000
-		n_episodes = 0
+		n_episodes = episode
 
 		miss = 0
 		win = 0
@@ -99,22 +97,13 @@ class DQNPlayer(Player,object):
 			agents = [agent_p1,agent_p2]
 			turn = np.random.choice([0,1])
 			last_state = None
-			# boolTurn = True
-			# if turn == 0:
-			# 	boolTurn = True
-			# else:
-			# 	boolTurn = False
 			while not banmen.isFinished():
 				action = agents[turn].act_and_train(banmen.convertTo1D(),reward)
 
 				banmen.put(action,True)
-				# banmen.printData()
-
-
 
 				if banmen.isFinished():
 					alignedNum = banmen.getAlignedNumber()
-					# if (alignedNum == 1 and turn == 0) or (alignedNum == 2 and turn == 1):
 					if alignedNum == 1:
 						reward = 1
 						win += 1
@@ -150,16 +139,3 @@ class DQNPlayer(Player,object):
 				agent_p1.save("result/result6_"+str(i))
 
 		self.agent = agent_p1
-
-
-dqn = DQNPlayer("testes",True)
-
-
-
-
-
-
-
-
-
-

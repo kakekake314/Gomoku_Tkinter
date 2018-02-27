@@ -13,7 +13,7 @@ class Banmen:
 		self.data=[]			#盤面を二次元配列で保持
 		self.missed = False		#置けない所に置こうとしたかどうか
 		self.done = False		#終了判定
-		# すべて0にする
+		# すべて3にする
 		for row in range(self.size):
 			self.data.append([])
 			for col in range(self.size):
@@ -40,10 +40,10 @@ class Banmen:
 		if oneDData[num] != 3:
 			self.missed = True
 			self.done = True
-			# if isCircle:
-			# 	self.alignedNum = 2
-			# else:
-			# 	self.alignedNum = 1
+			if isCircle:
+				self.alignedNum = 2
+			else:
+				self.alignedNum = 1
 		else:
 			if isCircle:
 				oneDData[num] = 1
@@ -219,10 +219,6 @@ class Banmen:
 						judgeData = self.data[row][col]
 		return judgeData # 勝敗なし0,先行（丸）勝ち:1,後攻（バツ）勝ち:2
 
-	# 揃った座標リストを返す
-	def getAlignedColRow(self):
-		return self.alignedColRow
-
 	# すべて埋まっているか確認
 	def isAllFilled(self):
 		for row in range(self.size):
@@ -245,9 +241,6 @@ class Banmen:
 		else:
 			return False
 
-	def getAlignedNumber(self):
-		return self.alignedNum
-
 	# 盤面表示
 	def printData(self):
 		for row in range(self.size):
@@ -261,13 +254,7 @@ class Banmen:
 			print ' '
 		print' '
 
-	# 盤面情報を返す
-	def getData(self):
-		return self.data
-
-	def getMissed(self):
-		return self.missed
-
+	# 盤面情報を一次元にして返す（学習用）
 	def convertTo1D(self):
 		oneDData = []
 		for row in range(self.size):
@@ -275,6 +262,7 @@ class Banmen:
 				oneDData.append(self.data[row][col])
 		return np.array(oneDData,dtype=np.float32)
 
+	# 一次元のデータを二次元のデータにセットし直す
 	def convertTo2D(self,data):
 		col = 0
 		row = 0
@@ -285,6 +273,7 @@ class Banmen:
 				col = 0
 				row += 1
 
+	# 二次元の座標が一次元で何番目のデータになるか返す
 	def get1DNum(self,col,row):
 		count = 0
 		for r in range(self.size):
@@ -303,9 +292,8 @@ class Banmen:
 		self.missed = False
 		self.done = False
 
-	def setData(self,data):
-		self.data = [d[:] for d in data]
 
+	# １と２を入れ替える（学習用）
 	def change(self):
 		for row in range(self.size):
 			for col in range(self.size):
@@ -314,3 +302,22 @@ class Banmen:
 				elif self.data[row][col] == 2:
 					self.data[row][col] = 1
 
+	# 揃った番号を返す
+	def getAlignedNumber(self):
+		return self.alignedNum
+
+	# 揃った座標リストを返す
+	def getAlignedColRow(self):
+		return self.alignedColRow
+
+	# 盤面情報を返す
+	def getData(self):
+		return self.data
+
+	# 失敗してるかを返す
+	def getMissed(self):
+		return self.missed
+
+	# 二次元データをセットする
+	def setData(self,data):
+		self.data = [d[:] for d in data]
