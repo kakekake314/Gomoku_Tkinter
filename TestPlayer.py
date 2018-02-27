@@ -11,8 +11,46 @@ class TestPlayer(Player,object):
 		self.banmen = banmen
 		self.count = 0
 
-	# 置ける所にランダムに置く
 	def action(self):
+		self.count += 1
+		exist = False
+		canputExist = False
+		adjacentList = []
+		canPutList = []
+		canPutList2 = []
+		data = self.banmen.getData()
+		for row in range(len(data)):
+			for col in range(len(data)):
+				if data[row][col] == 3:
+					canPutList2.append([col,row])
+		for row in range(len(data)):
+			for col in range(len(data)):
+				if data[row][col] == 1:
+					exist = True
+					adjacentList.append([col,row+1])
+					# adjacentList.append([col+1,row])
+					adjacentList.append([col,row-1])
+					# adjacentList.append([col-1,row])
+		if exist:
+			for adjacent in adjacentList:
+				col,row = adjacent
+				if self.canPut(col,row):
+					canputExist = True
+					canPutList.append([col,row])
+			if canputExist:
+				colRow = random.choice(canPutList)
+				col,row = colRow
+				return self.banmen.get1DNum(col,row)
+			else:
+				col,row = random.choice(canPutList2)
+				return self.banmen.get1DNum(col,row)
+
+		else:
+			return random.randint(0,48)
+
+
+	# 置ける所にランダムに置く
+	def randomAction(self):
 		self.count += 1
 		choice = []
 		for row in range(len(self.banmen.getData())):
