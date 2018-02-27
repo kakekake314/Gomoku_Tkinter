@@ -32,6 +32,31 @@ class DQNPlayer(Player,object):
 
 	def __init__(self,name,isSenkou):
 		super(DQNPlayer,self).__init__(name,isSenkou)
+		self.learning()
+
+
+	def action(self,banmen):
+
+		action = self.agent.act(self.convertTo1D(banmen))
+		col,row = self.getColRow(banmen,action)
+		return col,row
+
+	def convertTo1D(self,data):
+		oneDData = []
+		for row in range(len(data)):
+			for col in range(len(data)):
+				oneDData.append(data[row][col])
+		return np.array(oneDData,dtype=np.float32)
+
+	def getColRow(self,data,action):
+		num = 0
+		for row in range(len(data)):
+			for col in range(len(data)):
+				if num == action:
+					return col,row
+				num += 1
+
+	def learning(self):
 		banmen = Banmen()
 
 		player = TestPlayer("学習用プレイヤー",True,banmen)
@@ -46,7 +71,7 @@ class DQNPlayer(Player,object):
 		gamma = 0.95
 
 		explorer = chainerrl.explorers.LinearDecayEpsilonGreedy(
-			start_epsilon=1.0, end_epsilon=0.3, decay_steps=50000, random_action_func=player.action)
+			start_epsilon=1.0, end_epsilon=0.3, decay_steps=50000, random_action_func=player.randomAction)
 		replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=10 ** 6)
 		agent_p1 = chainerrl.agents.DoubleDQN(
 			q_func, optimizer, replay_buffer, gamma, explorer,
