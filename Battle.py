@@ -177,7 +177,7 @@ class Battle:
 
 	# 初期化（プレイヤー情報は保持）
 	def reset(self):
-		if self.winner != -1:
+		if self.winner != -1 and (self.isSenkouHuman or self.isKoukouHuman):
 			self.buttonColoring(self.banmen.getAlignedColRow(),'white')
 		self.banmen.reset()
 		self.banmenData = self.banmen.getData()
