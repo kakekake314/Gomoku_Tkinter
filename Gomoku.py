@@ -113,6 +113,7 @@ class Gomoku:
 		self.comboboxS.configure(state='normal')
 		self.comboboxK.configure(state='normal')
 		self.restartButton.configure(state='disabled')
+		self.changePlayerButton.configure(state='disabled')
 		self.battle.reset()
 
 	# 学習を行うボタン
